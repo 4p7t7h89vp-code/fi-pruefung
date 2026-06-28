@@ -30,9 +30,20 @@
     .progress { font-size: 13px; color: #8e8e93; text-align: center; margin: 8px 0; }
     .btn-pdf { width: 100%; padding: 16px; font-size: 17px; font-weight: 600; border-radius: 12px; border: none; background: #007aff; color: #ffffff; cursor: pointer; font-family: -apple-system, sans-serif; margin-top: 0.5rem; }
     .btn-pdf:disabled { opacity: 0.4; cursor: not-allowed; }
-    .hint { font-size: 12px; color: #8e8e93; text-align: center; margin-top: 10px; line-height: 1.5; }
-    .success-banner { background: #d1f5e0; border-radius: 12px; padding: 1rem; text-align: center; margin-top: 1rem; display: none; }
-    .success-banner p { color: #1a7f3c; font-size: 15px; font-weight: 500; }
+    .hint { font-size: 12px; color: #8e8e93; text-align: center; margin-top: 10px; line-height: 1.6; }
+    .hint strong { color: #1c1c1e; }
+
+    @media print {
+      body { background: #fff; }
+      .app { padding: 0; }
+      .header { padding: 0 0 1rem; }
+      .btn-pdf, .hint, .progress, .toggle-group { display: none !important; }
+      .switch-row { padding: 8px 0; }
+      .section { border-radius: 0; border: none; box-shadow: none; }
+      .meta-section { border-radius: 0; border: none; }
+      .print-only { display: block !important; }
+    }
+    .print-only { display: none; font-size: 13px; color: #1c1c1e; line-height: 1.6; margin-top: 1.5rem; padding-top: 1rem; border-top: 0.5px solid #e5e5ea; }
   </style>
 </head>
 <body>
@@ -105,12 +116,19 @@
       </div>
     </div>
 
-    <p class="progress" id="progress-text">0 von 7 Schaltern geprüft</p>
-    <button class="btn-pdf" id="pdf-btn" disabled>Protokoll speichern</button>
-    <p class="hint">Nach dem Tippen: Teilen → "In Dateien sichern" → iCloud Drive / Haus / Elektro</p>
-    <div class="success-banner" id="success-banner">
-      <p>✓ Protokoll wurde erstellt!</p>
+    <div class="print-only">
+      <p>Ich bestätige, dass alle FI-Schutzschalter ordnungsgemäß geprüft wurden.</p>
+      <br>
+      <p style="font-size:11px; color:#8e8e93;">Hinweis: Der Fehlerstrom-Schutzschalter (RCD/FI) verfügt über eine integrierte Prüftaste gemäß DIN EN 61008-1 (VDE 0664-10) bzw. DIN EN 61009-1 (VDE 0664-20). Zur Erhaltung der Funktionsfähigkeit wird empfohlen, die Prüftaste entsprechend den Herstellerangaben – in der Regel alle sechs Monate – zu betätigen.</p>
     </div>
+
+    <p class="progress" id="progress-text">0 von 7 Schaltern geprüft</p>
+    <button class="btn-pdf" id="pdf-btn" disabled>Als PDF speichern</button>
+    <p class="hint">
+      Nach dem Tippen öffnet sich die Druckansicht.<br>
+      Dort: <strong>Teilen → „In Dateien sichern"</strong><br>
+      → iCloud Drive / Haus / Elektro
+    </p>
   </div>
 
   <script>
@@ -136,26 +154,7 @@
     });
 
     document.getElementById('pdf-btn').addEventListener('click', () => {
-      const schalter = [
-        { id:'F01', name:'Außenbeleuchtung' },
-        { id:'F02', name:'Küche 1' },
-        { id:'F03', name:'Heizung' },
-        { id:'F04', name:'Wohnen' },
-        { id:'F05', name:'Keller' },
-        { id:'F06', name:'Küche 2' },
-        { id:'F07', name:'Wallbox' },
-      ];
-      const zeilen = schalter.map(s => (s.id + ' ' + s.name).padEnd(26) + ergebnisse[s.id]).join('\n');
-      const inhalt = 'FI-Schutzschalter Prüfprotokoll\n================================\nDatum:        ' + voll + '\nGeprüft von:  Lars Kunze\n\n' + zeilen + '\n\nIch bestätige, dass alle FI-Schutzschalter\nordnungsgemäß geprüft wurden.\n\n_______________________________\nUnterschrift\n\n--------------------------------\nHinweis: Der Fehlerstrom-Schutzschalter (RCD/FI) verfügt über eine integrierte\nPrüftaste gemäß DIN EN 61008-1 (VDE 0664-10) bzw. DIN EN 61009-1 (VDE 0664-20).\nZur Erhaltung der Funktionsfähigkeit wird empfohlen, die Prüftaste entsprechend\nden Herstellerangaben – in der Regel alle sechs Monate – zu betätigen.';
-
-      const blob = new Blob([inhalt], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'FI-Pruefung-' + datumStr.replace(/\./g,'-') + '.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-      document.getElementById('success-banner').style.display = 'block';
+      window.print();
     });
   </script>
 </body>
