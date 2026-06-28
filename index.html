@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FI-Prüfung">
+  <title>FI-Prüfung</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, sans-serif; background: #f2f2f7; min-height: 100vh; }
+    .app { padding: 1rem; max-width: 480px; margin: 0 auto; padding-bottom: 3rem; }
+    .header { text-align: center; padding: 1.5rem 0 1rem; margin-bottom: 1rem; }
+    .header h1 { font-size: 20px; font-weight: 600; color: #1c1c1e; }
+    .header p { font-size: 13px; color: #8e8e93; margin-top: 4px; }
+    .section { background: #ffffff; border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+    .switch-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 1rem; border-bottom: 0.5px solid #e5e5ea; }
+    .switch-row:last-of-type { border-bottom: none; }
+    .switch-label { font-size: 15px; color: #1c1c1e; }
+    .switch-label span { font-size: 12px; color: #8e8e93; display: block; margin-top: 2px; }
+    .toggle-group { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-toggle { padding: 7px 12px; font-size: 13px; border-radius: 8px; border: 1px solid #d1d1d6; background: #f2f2f7; color: #8e8e93; cursor: pointer; font-family: -apple-system, sans-serif; white-space: nowrap; }
+    .btn-toggle.ok.active { background: #d1f5e0; color: #1a7f3c; border-color: #34c759; }
+    .btn-toggle.fehler.active { background: #fde8e8; color: #c0392b; border-color: #ff3b30; }
+    .meta-section { background: #ffffff; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+    .meta-label { font-size: 13px; color: #8e8e93; }
+    .meta-value { font-size: 13px; color: #1c1c1e; font-weight: 500; }
+    .progress { font-size: 13px; color: #8e8e93; text-align: center; margin: 8px 0; }
+    .btn-pdf { width: 100%; padding: 16px; font-size: 17px; font-weight: 600; border-radius: 12px; border: none; background: #007aff; color: #ffffff; cursor: pointer; font-family: -apple-system, sans-serif; margin-top: 0.5rem; }
+    .btn-pdf:disabled { opacity: 0.4; cursor: not-allowed; }
+    .hint { font-size: 12px; color: #8e8e93; text-align: center; margin-top: 10px; line-height: 1.5; }
+    .success-banner { background: #d1f5e0; border-radius: 12px; padding: 1rem; text-align: center; margin-top: 1rem; display: none; }
+    .success-banner p { color: #1a7f3c; font-size: 15px; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>FI-Schutzschalter Prüfprotokoll</h1>
+      <p id="datum-anzeige"></p>
+    </div>
+
+    <div class="section">
+      <div class="switch-row">
+        <div class="switch-label">F01 <span>Außenbeleuchtung</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F01" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F01" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F02 <span>Küche 1</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F02" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F02" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F03 <span>Heizung</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F03" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F03" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F04 <span>Wohnen</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F04" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F04" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F05 <span>Keller</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F05" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F05" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F06 <span>Küche 2</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F06" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F06" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <div class="switch-label">F07 <span>Wallbox</span></div>
+        <div class="toggle-group">
+          <button class="btn-toggle ok" data-id="F07" data-val="OK">✓ OK</button>
+          <button class="btn-toggle fehler" data-id="F07" data-val="Fehler">✗ Fehler</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta-section">
+      <div class="meta-row">
+        <span class="meta-label">Geprüft von</span>
+        <span class="meta-value">Lars Kunze</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Datum</span>
+        <span class="meta-value" id="datum-meta"></span>
+      </div>
+    </div>
+
+    <p class="progress" id="progress-text">0 von 7 Schaltern geprüft</p>
+    <button class="btn-pdf" id="pdf-btn" disabled>Protokoll speichern</button>
+    <p class="hint">Nach dem Tippen: Teilen → "In Dateien sichern" → iCloud Drive / Haus / Elektro</p>
+    <div class="success-banner" id="success-banner">
+      <p>✓ Protokoll wurde erstellt!</p>
+    </div>
+  </div>
+
+  <script>
+    const now = new Date();
+    const datumStr = now.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const zeitStr = now.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+    const voll = datumStr + ' ' + zeitStr;
+    document.getElementById('datum-anzeige').textContent = voll;
+    document.getElementById('datum-meta').textContent = voll;
+
+    const ergebnisse = {};
+
+    document.querySelectorAll('.btn-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        ergebnisse[id] = btn.dataset.val;
+        document.querySelectorAll('.btn-toggle[data-id="' + id + '"]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const done = Object.keys(ergebnisse).length;
+        document.getElementById('progress-text').textContent = done + ' von 7 Schaltern geprüft';
+        document.getElementById('pdf-btn').disabled = done < 7;
+      });
+    });
+
+    document.getElementById('pdf-btn').addEventListener('click', () => {
+      const schalter = [
+        { id:'F01', name:'Außenbeleuchtung' },
+        { id:'F02', name:'Küche 1' },
+        { id:'F03', name:'Heizung' },
+        { id:'F04', name:'Wohnen' },
+        { id:'F05', name:'Keller' },
+        { id:'F06', name:'Küche 2' },
+        { id:'F07', name:'Wallbox' },
+      ];
+      const zeilen = schalter.map(s => (s.id + ' ' + s.name).padEnd(26) + ergebnisse[s.id]).join('\n');
+      const inhalt = 'FI-Schutzschalter Prüfprotokoll\n================================\nDatum:        ' + voll + '\nGeprüft von:  Lars Kunze\n\n' + zeilen + '\n\nIch bestätige, dass alle FI-Schutzschalter\nordnungsgemäß geprüft wurden.\n\n_______________________________\nUnterschrift\n\n--------------------------------\nHinweis: Der Fehlerstrom-Schutzschalter (RCD/FI) verfügt über eine integrierte\nPrüftaste gemäß DIN EN 61008-1 (VDE 0664-10) bzw. DIN EN 61009-1 (VDE 0664-20).\nZur Erhaltung der Funktionsfähigkeit wird empfohlen, die Prüftaste entsprechend\nden Herstellerangaben – in der Regel alle sechs Monate – zu betätigen.';
+
+      const blob = new Blob([inhalt], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'FI-Pruefung-' + datumStr.replace(/\./g,'-') + '.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      document.getElementById('success-banner').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
